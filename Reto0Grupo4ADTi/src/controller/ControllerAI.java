@@ -9,6 +9,6 @@ package controller;
  *
  * @author Iñi
  */
-public interface InterfaceController {
+public class ControllerAI implements InterfaceControllerAI{
     
 }
