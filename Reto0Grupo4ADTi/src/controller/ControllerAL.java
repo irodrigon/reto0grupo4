@@ -5,10 +5,19 @@
  */
 package controller;
 
+import model.ConvocatoriaExamen;
+
 /**
  *
  * @author Alin
  */
 public class ControllerAL implements InterfaceControllerAL{
+
+    @Override
+    public ConvocatoriaExamen consultarConvocatoriaEnunciado(Integer idE) {
+        return null;
+        
+    }
+
     
 }

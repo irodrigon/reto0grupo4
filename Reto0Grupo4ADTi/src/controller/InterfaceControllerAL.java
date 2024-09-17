@@ -5,10 +5,12 @@
  */
 package controller;
 
+import model.ConvocatoriaExamen;
+
 /**
  *
- * @author Iñi
+ * @author Alin
  */
 public interface InterfaceControllerAL {
-    
+    public ConvocatoriaExamen consultarConvocatoriaEnunciado(Integer idE);
 }
