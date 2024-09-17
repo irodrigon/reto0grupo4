@@ -7,8 +7,8 @@ package controller;
 
 /**
  *
- * @author Iñi
+ * @author Alin
  */
-public class Controller implements InterfaceController{
+public class ControllerAL implements InterfaceControllerAL{
     
 }
