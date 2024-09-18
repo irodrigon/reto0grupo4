@@ -5,10 +5,15 @@
  */
 package controller;
 
+import model.Enunciado;
+
+
+
 /**
  *
  * @author Iñi
  */
 public interface InterfaceController {
-    
+    public Boolean crearEnunciado(Enunciado enunciado);
+    public String rutaEnunciadoPorId(Integer idE);
 }

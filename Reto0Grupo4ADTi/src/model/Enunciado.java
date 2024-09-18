@@ -5,11 +5,13 @@
  */
 package model;
 
+import java.io.Serializable;
+
 /**
  *
  * @author Iñi
  */
-public class Enunciado {
+public class Enunciado implements Serializable{
     
     private Integer idE;
     private String descripcion;
@@ -21,10 +23,10 @@ public class Enunciado {
     
     }
 
-    public Enunciado(Integer id, String descripcion, Dificultad nivel, boolean disponible, String ruta) {
+    public Enunciado(Integer id, String descripcion, String nivel, boolean disponible, String ruta) {
         this.idE = id;
         this.descripcion = descripcion;
-        this.nivel = nivel;
+        this.nivel = Dificultad.valueOf(nivel.toUpperCase());
         this.disponible = disponible;
         this.ruta = ruta;
     }
@@ -45,12 +47,12 @@ public class Enunciado {
         this.descripcion = descripcion;
     }
 
-    public Dificultad getNivel() {
-        return nivel;
+    public String getNivel() {
+        return nivel.name();
     }
 
-    public void setNivel(Dificultad nivel) {
-        this.nivel = nivel;
+    public void setNivel(String nivel) {
+        this.nivel = Dificultad.valueOf(nivel);
     }
 
     public boolean isDisponible() {
