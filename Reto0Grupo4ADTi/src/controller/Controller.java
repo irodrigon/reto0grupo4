@@ -19,22 +19,24 @@ import model.Enunciado;
  */
 public class Controller implements InterfaceController{
     
-    private Connection con;
+    private SingletonConnection singletonConnection = SingletonConnection.getSingletonConnection();
+    private Connection connectionToDatabase;
 
 	// Sirve para gestionar las sentencias SQL.
     private PreparedStatement stmt;
     
     private final String CREAR_ENUNCIADO = "INSERT INTO ENUNCIADO VALUES(?,?,?,?,?)";
     private final String MUESTRA_RUTA_ENUNCIADO_POR_ID = "SELECT ruta FROM ENUNCIADO WHERE IDE = ?";
+    private final String CREAR_CONVOCATORIA_EXAMEN = "INSERT INTO CONVOCATORIAEXAMEN VALUES(?,?,?,?,?)";
 
     @Override
     public Boolean crearEnunciado(Enunciado enunciado) {
                 Boolean cambios = false;
 		
-		con = SingletonConnection.getConnection();
+		connectionToDatabase = singletonConnection.getConnection();
 		
 		try {
-			stmt = con.prepareStatement(CREAR_ENUNCIADO);
+			stmt = connectionToDatabase.prepareStatement(CREAR_ENUNCIADO);
 			stmt.setInt(1,enunciado.getId());
 			stmt.setString(2,enunciado.getDescripcion());
 			stmt.setString(3,enunciado.getNivel());
@@ -56,10 +58,10 @@ public class Controller implements InterfaceController{
                 ResultSet rs = null;
 		String ruta = "";
 
-		con = SingletonConnection.getConnection();
+		connectionToDatabase = singletonConnection.getConnection();
 
 		try {
-			stmt = con.prepareStatement(MUESTRA_RUTA_ENUNCIADO_POR_ID);
+			stmt = connectionToDatabase.prepareStatement(MUESTRA_RUTA_ENUNCIADO_POR_ID);
 
 			// Cargamos los parámetros
 			stmt.setInt(1, idE);
@@ -93,16 +95,17 @@ public class Controller implements InterfaceController{
     public Boolean crearConvocatoria(ConvocatoriaExamen convocatoriaExamen) {
         Boolean cambios = false;
 		
-		con = SingletonConnection.getConnection();
+		connectionToDatabase = singletonConnection.getConnection();
 		
 		try {
-			stmt = con.prepareStatement(CREAR_ENUNCIADO);
-			stmt.setString(1,convocatoriaExamen.getConvocatoria());
-			stmt.setString(2,convocatoriaExamen.getDescripcion());
-			stmt.setDate(3,Date.valueOf(convocatoriaExamen.getFecha()));
-			stmt.setString(5,convocatoriaExamen.getCurso());
+			stmt = connectionToDatabase.prepareStatement(CREAR_ENUNCIADO);
+			stmt.setString(1, convocatoriaExamen.getConvocatoria());
+			stmt.setString(2, convocatoriaExamen.getDescripcion());
+			stmt.setDate(3, Date.valueOf(convocatoriaExamen.getFecha()));
+			stmt.setString(4, convocatoriaExamen.getCurso());
+                        stmt.setInt(5, 0);
 			
-			if (stmt.executeUpdate()== 1) {
+			if (stmt.executeUpdate() == 1) {
 				cambios = true;
 			}
 		} catch (SQLException e) {

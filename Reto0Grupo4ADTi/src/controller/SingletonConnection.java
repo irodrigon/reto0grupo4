@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 package controller;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -13,29 +14,37 @@ import java.sql.SQLException;
  * @author Iñi
  */
 public class SingletonConnection {
+    public String name;
+    private static SingletonConnection singletonConnection;
+    private Connection connection;
 
-	private static Connection con = null;
+    private SingletonConnection() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/examendb", "root", "abcd*1234");
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-	static {
+    public static SingletonConnection getSingletonConnection() {
+        if (singletonConnection == null) {
+            singletonConnection = new SingletonConnection();
+        }
+        return singletonConnection;
+    }
 
-		//La conexión a la base de datos gracias a las librerías importadas por el conector mysql.
-		String url = "jdbc:mysql://localhost:3306/examendb?serverTimezone=Europe/Madrid&allowPublicKeyRetrieval=true&useSSL=false";
-		//El usuario a usar, en este caso administrador.
-		String user = "root";
-		//La contraseña del usuario en cuestión.
-		String pass = "abcd*1234";
-		try {
-			//Sentencias propias del método: Driver de conexión.
+    public Connection getConnection() {
+        return connection;
+    }
 
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			con = DriverManager.getConnection(url, user, pass);
-		} catch (ClassNotFoundException | SQLException e) {
-			e.printStackTrace();
-		}
-	}
+    public String getName() {
+        return name;
+    }
 
-	public static Connection getConnection() {
-		return con;
-	}
-}
+    public void setName(String name) {
+        this.name = name;
+    }
     
+    
+}

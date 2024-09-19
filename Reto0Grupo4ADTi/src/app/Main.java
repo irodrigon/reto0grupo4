@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import model.ConvocatoriaExamen;
 import model.Enunciado;
 import utils.Util;
 
@@ -51,7 +52,7 @@ public class Main {
                                 break;
 
                             case 2:
-                                crearConvocatoria();
+                                crearConvocatoria(c);
                                 break;
 
                             default:
@@ -126,14 +127,15 @@ public class Main {
 
     }
 
-    private static void crearConvocatoria() {
-
+    private static void crearConvocatoria(Controller c) {
+        ConvocatoriaExamen convocatoriaExamen = rellenarDatosConvocatoriaExamen();
+        c.crearConvocatoria(convocatoriaExamen);
     }
 
     private static void crearEnunciadoExamen(Controller c) {
         Enunciado enunciado = rellenarDatosEnunciado();
         c.crearEnunciado(enunciado);
-        File fichero = new File(enunciado.getRuta());
+        /*File fichero = new File(enunciado.getRuta());
         try {
             if (!fichero.exists()) {
                 FileOutputStream fileOutputStream = new FileOutputStream(fichero);
@@ -148,11 +150,11 @@ public class Main {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private static void consultarEnunciadoPorUnidad() {
-
+        
     }
 
     private static void consultarConvocatoriaPorEnunciado() {
@@ -164,7 +166,7 @@ public class Main {
         Enunciado enunciado = null;
         System.out.println("Introduzca el id del enunciado:");
         ruta = c.rutaEnunciadoPorId(Util.leerInt());
-        File ficheroRuta = new File(ruta);
+        /*File ficheroRuta = new File(ruta);
         ObjectInputStream ois = null;
         try {
             if (ficheroRuta.exists()) {
@@ -186,7 +188,7 @@ public class Main {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private static void asignarEnunciadoConvocatoria() {
@@ -225,6 +227,20 @@ public class Main {
         enunciado.setRuta(Util.introducirCadena());
 
         return enunciado;
+    }
+
+    private static ConvocatoriaExamen rellenarDatosConvocatoriaExamen() {
+        ConvocatoriaExamen convocatoriaExamen = new ConvocatoriaExamen();
+        System.out.println("**************************CREANDO CONVOCATORIAS**************************");
+        System.out.println("Introduce la convocatoria:");
+        convocatoriaExamen.setConvocatoria(Util.introducirCadena());
+        System.out.println("Introduce la descripcion de la convocatoria:");
+        convocatoriaExamen.setDescripcion(Util.introducirCadena());
+        System.out.println("Introduce la fecha de la convocatoria:");
+        convocatoriaExamen.setFecha(Util.leerFechaDMA());
+        System.out.println("Introduce el curso de la convocatoria:");
+        convocatoriaExamen.setCurso(Util.introducirCadena());
+        return convocatoriaExamen;
     }
 
 }

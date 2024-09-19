@@ -12,6 +12,7 @@ import java.time.LocalDate;
  * @author Iñi
  */
 public class ConvocatoriaExamen {
+    
     private String convocatoria;
     private String descripcion;
     private LocalDate fecha;
