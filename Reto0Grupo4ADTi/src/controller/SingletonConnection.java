@@ -37,14 +37,4 @@ public class SingletonConnection {
     public Connection getConnection() {
         return connection;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-    
-    
 }
