@@ -6,9 +6,11 @@
 package controller;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import model.ConvocatoriaExamen;
 import model.Enunciado;
 
 /**
@@ -87,6 +89,31 @@ public class Controller implements InterfaceController{
 		return ruta;
     }
 
-    
-    
+    @Override
+    public Boolean crearConvocatoria(ConvocatoriaExamen convocatoriaExamen) {
+        Boolean cambios = false;
+		
+		con = SingletonConnection.getConnection();
+		
+		try {
+			stmt = con.prepareStatement(CREAR_ENUNCIADO);
+			stmt.setString(1,convocatoriaExamen.getConvocatoria());
+			stmt.setString(2,convocatoriaExamen.getDescripcion());
+			stmt.setDate(3,Date.valueOf(convocatoriaExamen.getFecha()));
+			stmt.setString(5,convocatoriaExamen.getCurso());
+			
+			if (stmt.executeUpdate()== 1) {
+				cambios = true;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return cambios;
+    }
 }
+
+    
+    
+
+

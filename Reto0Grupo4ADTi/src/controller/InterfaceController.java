@@ -5,6 +5,7 @@
  */
 package controller;
 
+import model.ConvocatoriaExamen;
 import model.Enunciado;
 
 
@@ -16,4 +17,5 @@ import model.Enunciado;
 public interface InterfaceController {
     public Boolean crearEnunciado(Enunciado enunciado);
     public String rutaEnunciadoPorId(Integer idE);
+    public Boolean crearConvocatoria(ConvocatoriaExamen convocatoriaExamen);
 }

@@ -6,6 +6,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 /**
  *
@@ -18,17 +19,19 @@ public class Enunciado implements Serializable{
     private Dificultad nivel;
     private boolean disponible;
     private String ruta;
+    private ArrayList<UnidadDidactica> unidadesDidacticas;
     
     public Enunciado(){
-    
+        this.unidadesDidacticas = new ArrayList<UnidadDidactica>();
     }
 
-    public Enunciado(Integer id, String descripcion, String nivel, boolean disponible, String ruta) {
+    public Enunciado(Integer id, String descripcion, String nivel, boolean disponible, String ruta, ArrayList<UnidadDidactica> unidadesdidacticas) {
         this.idE = id;
         this.descripcion = descripcion;
         this.nivel = Dificultad.valueOf(nivel.toUpperCase());
         this.disponible = disponible;
         this.ruta = ruta;
+        this.unidadesDidacticas = new ArrayList<UnidadDidactica>();
     }
 
     public Integer getId() {
@@ -70,6 +73,12 @@ public class Enunciado implements Serializable{
     public void setRuta(String ruta) {
         this.ruta = ruta;
     }
-    
-    
+
+    public ArrayList<UnidadDidactica> getUnidadesDidacticas() {
+        return unidadesDidacticas;
+    }
+
+    public void setUnidadesDidacticas(ArrayList<UnidadDidactica> unidadesDidacticas) {
+        this.unidadesDidacticas = unidadesDidacticas;
+    }
 }
