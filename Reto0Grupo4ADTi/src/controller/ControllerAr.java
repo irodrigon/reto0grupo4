@@ -15,7 +15,7 @@ public class ControllerAr implements InterfaceControllerAr {
 
     private void openConnection() {
         try {
-            String url = "jdbc:mysql://localhost:3306/Sanrio?serverTimezone=Europe/Madrid&useSSL=false";
+            String url = "jdbc:mysql://localhost:3306/examendb?serverTimezone=Europe/Madrid&useSSL=false";
             conexion = DriverManager.getConnection(url, "root", "abcd*1234");
         } catch (SQLException error) {
             System.out.println("Error al intentar abrir la BD: " + error.getMessage());
@@ -47,19 +47,19 @@ public class ControllerAr implements InterfaceControllerAr {
 
         System.out.println("Nueva unidad didáctica:");
 
-        System.out.println("Introduzca el ID de la unidad didáctica:");
+        System.out.println("\nIntroduzca el ID de la unidad didáctica:");
         idUd = Util.leerInt();
 
-        System.out.println("Introduzca el acrónimo correspondiente a esta unidad didáctica:");
+        System.out.println("\nIntroduzca el acrónimo correspondiente a esta unidad didáctica:");
         acronimo = Util.introducirCadena();
 
-        System.out.println("Introduzca el título de esta unidad didáctica:");
+        System.out.println("\nIntroduzca el título de esta unidad didáctica:");
         titulo = Util.introducirCadena();
 
-        System.out.println("Introduzca la evaluación correspondiente a esta unidad didáctica:");
+        System.out.println("\nIntroduzca la evaluación correspondiente a esta unidad didáctica:");
         evaluacion = Util.introducirCadena();
 
-        System.out.println("Introduzca la descripción de esta unidad didáctica:");
+        System.out.println("\nIntroduzca la descripción de esta unidad didáctica:");
         descripcion = Util.introducirCadena();
 
         return new UnidadDidactica(idUd, acronimo, titulo, evaluacion, descripcion);
@@ -79,10 +79,13 @@ public class ControllerAr implements InterfaceControllerAr {
             sentencia.setString(4, unidadDidactica.getEvaluacion());
             sentencia.setString(5, unidadDidactica.getDescripcion());
             sentencia.executeUpdate();
+            
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             this.closeConnection();
+            
         }
+        System.out.println("\nUnidad didáctica creada correctamente.\n");
     }
 }

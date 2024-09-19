@@ -6,6 +6,7 @@
 package app;
 
 
+import controller.ControllerAr;
 import utils.Util;
 
 /**
@@ -114,7 +115,8 @@ public class Main {
     }
 
     private static void crearUnidad() {
-        
+      ControllerAr c = new ControllerAr();
+      c.crearUD();
     }
 
     private static void crearConvocatoria() {
