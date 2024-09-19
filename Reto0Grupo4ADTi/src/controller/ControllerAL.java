@@ -10,7 +10,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import model.Enunciado;
+import java.util.ArrayList;
 
 
 /**
@@ -32,11 +32,10 @@ public class ControllerAL implements InterfaceControllerAL{
     
     private final String MUESTRA_CONVOCATORIA_ENUNCIADO_POR_ID = "SELECT convocatoria FROM CONVOCATORIAEXAMEN WHERE IDE = ?";
 
-    @Override
-    public String rutaEnunciadoPorId(Integer idE) {
+    public ArrayList rutaEnunciadoPorId(Integer idE) {
                 ResultSet rs = null;
 		String convocatoria = "";
-
+                ArrayList <String> convocatorias = new ArrayList <String>();
 		con = SingletonConnection.getConnection();
 
 		try {
@@ -47,13 +46,14 @@ public class ControllerAL implements InterfaceControllerAL{
 
 			rs = stmt.executeQuery();
 
-			if (rs.next()) {
+			while (rs.next()) {
 				
 				convocatoria = rs.getString("convocatoria");
-				
-			}else{
+				convocatorias.add(convocatoria);
+			}
+                        /*else{
                             System.out.println("No se encuentra la entrada.");
-                        }
+                        */
 		} catch (SQLException e) {
 			System.out.println("Error de SQL");
 			e.printStackTrace();
@@ -67,7 +67,7 @@ public class ControllerAL implements InterfaceControllerAL{
 				}
 			}
 		}
-		return convocatoria;
+		return convocatorias;
     }
 
     
