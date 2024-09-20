@@ -16,6 +16,13 @@ public class ConvocatoriaExamen {
     private String descripcion;
     private LocalDate fecha;
     private String curso;
+    
+    public ConvocatoriaExamen(String convocatoria, String descripcion,LocalDate fecha,String curso){
+        this.convocatoria=convocatoria;
+        this.descripcion=convocatoria;
+        this.fecha=fecha;
+        this.curso=curso;
+    }
 
     public String getConvocatoria() {
         return convocatoria;

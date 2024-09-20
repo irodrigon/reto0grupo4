@@ -13,4 +13,7 @@ import model.ConvocatoriaExamen;
  */
 public interface InterfaceControllerAL {
     public ConvocatoriaExamen consultarConvocatoriaEnunciado(Integer idE);
+    public ConvocatoriaExamen nuevaConvocatoria();
+
+    public void crearConvocatoria();
 }
