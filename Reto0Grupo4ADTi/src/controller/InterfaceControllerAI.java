@@ -5,10 +5,15 @@
  */
 package controller;
 
+import java.util.ArrayList;
+import model.UnidadDidactica;
+
 /**
  *
  * @author Iñi
  */
 public interface InterfaceControllerAI {
-    
+    public ArrayList<UnidadDidactica> getUnidades();
+    public ArrayList<String> getEnunciados(int eleccion);
+    public void mostra_unidad_enunciado();
 }
