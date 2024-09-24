@@ -16,6 +16,10 @@ public class UnidadDidactica {
     private String titulo;
     private String evaluacion;
     private String descripcion;
+    
+    public UnidadDidactica(){
+    
+    }
 
     public UnidadDidactica(Integer idUd, String acronimo, String titulo, String evaluacion, String descripcion) {
         this.idUd = idUd;

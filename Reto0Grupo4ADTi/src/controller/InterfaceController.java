@@ -5,8 +5,10 @@
  */
 package controller;
 
+import java.util.ArrayList;
 import model.ConvocatoriaExamen;
 import model.Enunciado;
+import model.UnidadDidactica;
 
 
 
@@ -15,7 +17,19 @@ import model.Enunciado;
  * @author Iñi
  */
 public interface InterfaceController {
-    public Boolean crearEnunciado(Enunciado enunciado);
-    public String rutaEnunciadoPorId(Integer idE);
-    public Boolean crearConvocatoria(ConvocatoriaExamen convocatoriaExamen);
+    public UnidadDidactica newUD();
+    public void crearUD();
+    public void crearConvocatoria();
+    public ConvocatoriaExamen newConvocatoria();
+    public Enunciado newEnunciado();
+    public void crearEnunciado(Enunciado enunciado);
+    public void agregarUnidadesDidacticas(Enunciado enunciado);
+    public void actualizaTablaEnunciado_Unidad(int idE, int idUd);
+    public void asociaEnunciado(Enunciado enunciado);
+    public ArrayList<UnidadDidactica> getUnidades();
+    public ArrayList<String> getEnunciados(int eleccion);
+    public void mostra_unidad_enunciado();
+    public ArrayList<ConvocatoriaExamen> convocatoriaEnunciadoPorId(Integer idE);
+    public String rutaArchivoEnunciadoPorId(Integer idE);
+    public void asignarEnunciado();
 }

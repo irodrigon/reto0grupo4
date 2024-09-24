@@ -6,16 +6,13 @@
 package app;
 
 import controller.Controller;
-import exceptions.ExcepcionComprobarDificultad;
+import controller.SingletonConnection;
+import java.awt.Desktop;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import model.ConvocatoriaExamen;
+import java.util.ArrayList;
 import model.Enunciado;
+import model.UnidadDidactica;
 import utils.Util;
 
 /**
@@ -48,7 +45,7 @@ public class Main {
                         switch (choice) {
 
                             case 1:
-                                crearUnidad();
+                                crearUnidad(c);
                                 break;
 
                             case 2:
@@ -69,11 +66,11 @@ public class Main {
                     break;
 
                 case 3:
-                    consultarEnunciadoPorUnidad();
+                    consultarEnunciadoPorUnidad(c);
                     break;
 
                 case 4:
-                    consultarConvocatoriaPorEnunciado();
+                    consultarConvocatoriaPorEnunciado(c);
                     break;
 
                 case 5:
@@ -81,7 +78,7 @@ public class Main {
                     break;
 
                 case 6:
-                    asignarEnunciadoConvocatoria();
+                    asignarEnunciadoConvocatoria(c);
                     break;
 
                 case 7:
@@ -99,7 +96,7 @@ public class Main {
     private static int menu() {
 
         System.out.println("************************GESTION DE EXAMENES**************************");
-        System.out.println("1. Crear una unidad didactica y una convocatoria de examen:");
+        System.out.println("1. Crear una unidad didactica o una convocatoria de examen:");
         System.out.println("2. Crear un enunciado de examen:");
         System.out.println("3. Consultar los enunciados de examen por unidad didactica:");
         System.out.println("4. Consultar convocatorias por enunciado:");
@@ -108,7 +105,7 @@ public class Main {
         System.out.println("7. Salir");
         System.out.println("Introduce una opcion:");
 
-        return Util.leerInt();
+        return Util.leerInt(1, 7);
 
     }
 
@@ -119,128 +116,61 @@ public class Main {
         System.out.println("2. Crear convocatoria de examen:");
         System.out.println("3. Volver al menu anterior:");
 
-        return Util.leerInt();
+        return Util.leerInt(1, 3);
 
     }
 
-    private static void crearUnidad() {
-
+    private static void crearUnidad(Controller c) {
+        c.crearUD();
     }
 
     private static void crearConvocatoria(Controller c) {
-        ConvocatoriaExamen convocatoriaExamen = rellenarDatosConvocatoriaExamen();
-        c.crearConvocatoria(convocatoriaExamen);
+        c.crearConvocatoria();
     }
 
     private static void crearEnunciadoExamen(Controller c) {
-        Enunciado enunciado = rellenarDatosEnunciado();
+        Enunciado enunciado = c.newEnunciado();
         c.crearEnunciado(enunciado);
-        /*File fichero = new File(enunciado.getRuta());
-        try {
-            if (!fichero.exists()) {
-                FileOutputStream fileOutputStream = new FileOutputStream(fichero);
-                ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                objectOutputStream.writeObject(enunciado);
-                objectOutputStream.close();
-                fileOutputStream.close();
-            } else {
-                System.out.println("El fichero asociado a este enunciado ya existe.");
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
+        c.agregarUnidadesDidacticas(enunciado);
+        c.asociaEnunciado(enunciado);
     }
 
-    private static void consultarEnunciadoPorUnidad() {
-        
+    private static void consultarEnunciadoPorUnidad(Controller c) {
+        c.mostra_unidad_enunciado();
     }
 
-    private static void consultarConvocatoriaPorEnunciado() {
-
+    private static void consultarConvocatoriaPorEnunciado(Controller c) {
+        System.out.println("Introduzca el ID del enunciado:");
+        int idE = Util.leerInt();
+        System.out.println("Convocatorias con el enunciado: " + idE);
+        c.convocatoriaEnunciadoPorId(idE);
     }
 
     private static void visualizarDocumentoTexto(Controller c) {
         String ruta = "";
         Enunciado enunciado = null;
+        System.out.println();
         System.out.println("Introduzca el id del enunciado:");
-        ruta = c.rutaEnunciadoPorId(Util.leerInt());
-        /*File ficheroRuta = new File(ruta);
-        ObjectInputStream ois = null;
-        try {
-            if (ficheroRuta.exists()) {
-                ois = new ObjectInputStream(new FileInputStream(ficheroRuta));
-
-                enunciado = (Enunciado) ois.readObject();
-                System.out.println("Id del enunciado:" + enunciado.getId());
-                System.out.println("Descripcion del enunciado: "+ enunciado.getDescripcion());
-                System.out.println("Nivel de dificultad: " + enunciado.getNivel());
-                if(enunciado.isDisponible()){
-                    System.out.println("Disponible: si");
-                }else{
-                    System.out.println("Disponible: no");        
+        ruta = c.rutaArchivoEnunciadoPorId(Util.leerInt()); 
+        if (ruta != null && !ruta.isEmpty()) {
+            try {
+                File archivo = new File(System.getProperty("user.dir") + "/src/enunciados/" + ruta);
+                if (archivo.exists() && Desktop.isDesktopSupported()) {
+                    Desktop.getDesktop().open(archivo);
+                } else {
+                    System.out.println("El archivo no existe en la ruta especificada.");
                 }
-            } else {
-                System.out.println("El fichero no existe.");
+            } catch (IOException e) {
+                System.out.println("Error al abrir el archivo en la ruta local: " + ruta);
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }*/
-    }
-
-    private static void asignarEnunciadoConvocatoria() {
-
-    }
-
-    private static Enunciado rellenarDatosEnunciado() {
-        Boolean dificultadValida = false;
-        char eleccion = 0;
-        String nivel = "";
-        Enunciado enunciado = new Enunciado();
-        System.out.println("**************************CREANDO ENUNCIADOS**************************");
-        System.out.println("Introduce el ID del enunciado:");
-        enunciado.setId(Util.leerInt());
-        System.out.println("Introduce la descripcion del enunciado:");
-        enunciado.setDescripcion(Util.introducirCadena());
-        while (!dificultadValida) {
-            System.out.println("Introduce el nivel de dificultad del enunciado(ALTA/MEDIA/BAJA):");
-            nivel = Util.introducirCadena();
-            if (nivel.equals("ALTA") || nivel.equals("MEDIA") || nivel.equals("BAJA")) {
-                dificultadValida = true;
-                enunciado.setNivel(nivel);
-            } else {
-                ExcepcionComprobarDificultad excepcionComprobarDificultad = new ExcepcionComprobarDificultad(nivel);
-                excepcionComprobarDificultad.mostrarMensajeIncorrecto();
-            }
-        }
-        System.out.println("Introduce si esta disponible o no(S/N):");
-        eleccion = Util.leerChar('S', 'N');
-        if (eleccion == 'S') {
-            enunciado.setDisponible(true);
         } else {
-            enunciado.setDisponible(false);
+            System.out.println("No hay ruta asociada a este enunciado.");
         }
-        System.out.println("Introduce la ruta del enunciado:");
-        enunciado.setRuta(Util.introducirCadena());
-
-        return enunciado;
     }
 
-    private static ConvocatoriaExamen rellenarDatosConvocatoriaExamen() {
-        ConvocatoriaExamen convocatoriaExamen = new ConvocatoriaExamen();
-        System.out.println("**************************CREANDO CONVOCATORIAS**************************");
-        System.out.println("Introduce la convocatoria:");
-        convocatoriaExamen.setConvocatoria(Util.introducirCadena());
-        System.out.println("Introduce la descripcion de la convocatoria:");
-        convocatoriaExamen.setDescripcion(Util.introducirCadena());
-        System.out.println("Introduce la fecha de la convocatoria:");
-        convocatoriaExamen.setFecha(Util.leerFechaDMA());
-        System.out.println("Introduce el curso de la convocatoria:");
-        convocatoriaExamen.setCurso(Util.introducirCadena());
-        return convocatoriaExamen;
+    private static void asignarEnunciadoConvocatoria(Controller c) {
+        c.asignarEnunciado();
     }
 
 }

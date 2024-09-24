@@ -19,6 +19,6 @@ public class ExcepcionComprobarDificultad extends Exception{
 	}
 	
 	public void mostrarMensajeIncorrecto() {
-		System.out.println("La dificultad " + nivel +" no existe.");
+		System.out.println("La dificultad " + nivel + " no existe.");
 	}
 }

@@ -14,7 +14,6 @@ import java.sql.SQLException;
  * @author Iñi
  */
 public class SingletonConnection {
-    public String name;
     private static SingletonConnection singletonConnection;
     private Connection connection;
 
@@ -36,5 +35,14 @@ public class SingletonConnection {
 
     public Connection getConnection() {
         return connection;
+    }
+    
+    public void closeConnection() {
+        try {
+          connection.close();
+        } catch (SQLException e) {
+          e.printStackTrace();
+        }
+
     }
 }
