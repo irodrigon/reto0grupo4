@@ -24,6 +24,6 @@ public interface InterfaceControllerAr {
     
     public void asignarEnunciado();
     
-     public void mostrarEnunciado();
+     public void visualizarEnunciado();
      
 }

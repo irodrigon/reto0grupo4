@@ -3,8 +3,6 @@ package controller;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -103,6 +101,10 @@ public class ControllerAr implements InterfaceControllerAr {
         System.out.println("\nUnidad didáctica creada correctamente.\n");
     }
 
+    /**
+     *
+     */
+    @Override
     public void asignarEnunciado() {
         this.openConnection();
         try {
@@ -172,79 +174,68 @@ public class ControllerAr implements InterfaceControllerAr {
         }
     }
 
-public void mostrarEnunciado() {
-    this.openConnection();
-    try {
-       
-        sentencia = conexion.prepareStatement(GETenunciado);
-        resultado = sentencia.executeQuery();
-        
-        ArrayList<Integer> enunciados = new ArrayList<>();
-        System.out.println("Enunciados disponibles:");
-        
-        while (resultado.next()) {
-            int idEnunciado = resultado.getInt("idE");
-            String descripcion = resultado.getString("descripcion");
-            enunciados.add(idEnunciado);
-            System.out.println("ID: " + idEnunciado + " - Descripción: " + descripcion);
-        }
-        
-        if (enunciados.isEmpty()) {
-            System.out.println("No hay enunciados disponibles.");
-            return;  
-        }
-        
-       
-        System.out.println("Introduzca el ID del enunciado que desea ver: ");
-        int idEnunciadoSeleccionado = Util.leerInt();
-        
-       
-        if (!enunciados.contains(idEnunciadoSeleccionado)) {
-            System.out.println("El ID de enunciado introducido no es válido.");
-            return;  
-        }
-        
-        
-        sentencia = conexion.prepareStatement(GETenunciadoRuta);
-        sentencia.setInt(1, idEnunciadoSeleccionado);
-        ResultSet rs = sentencia.executeQuery();
-        
-        if (rs.next()) {
-            String ruta = rs.getString("ruta");
-            if (ruta != null && !ruta.isEmpty()) {
-              
-                try {
-                    if (ruta.startsWith("http://") || ruta.startsWith("https://")) {
-                      
-                        Desktop.getDesktop().browse(new URI(ruta));
-                    } else {
-                        // Si es un archivo local, intentar abrirlo
+    @Override
+    public void visualizarEnunciado() {
+        this.openConnection();
+        try {
+
+            sentencia = conexion.prepareStatement(GETenunciado);
+            resultado = sentencia.executeQuery();
+
+            ArrayList<Integer> enunciados = new ArrayList<>();
+            System.out.println("Enunciados disponibles:");
+
+            while (resultado.next()) {
+                int idEnunciado = resultado.getInt("idE");
+                String descripcion = resultado.getString("descripcion");
+                enunciados.add(idEnunciado);
+                System.out.println("ID: " + idEnunciado + " - Descripción: " + descripcion);
+            }
+
+            if (enunciados.isEmpty()) {
+                System.out.println("No hay enunciados disponibles.");
+                return;
+            }
+
+            System.out.println("Introduzca el ID del enunciado que desea ver: ");
+            int idEnunciadoSeleccionado = Util.leerInt();
+
+            if (!enunciados.contains(idEnunciadoSeleccionado)) {
+                System.out.println("El ID de enunciado introducido no es válido.");
+                return;
+            }
+
+            sentencia = conexion.prepareStatement(GETenunciadoRuta);
+            sentencia.setInt(1, idEnunciadoSeleccionado);
+            ResultSet rs = sentencia.executeQuery();
+
+            if (rs.next()) {
+                String ruta = rs.getString("ruta");
+                if (ruta != null && !ruta.isEmpty()) {
+                    try {
                         File archivo = new File(ruta);
                         if (archivo.exists()) {
                             Desktop.getDesktop().open(archivo);
                         } else {
                             System.out.println("El archivo no existe en la ruta especificada.");
                         }
+                    } catch (IOException e) {
+                        System.out.println("Error al abrir el archivo en la ruta local: " + ruta);
+                        e.printStackTrace();
                     }
-                } catch (IOException | URISyntaxException e) {
-                    System.out.println("Error al abrir el documento: " + e.getMessage());
-                    e.printStackTrace();
+                } else {
+                    System.out.println("No hay ruta asociada a este enunciado.");
                 }
             } else {
-                System.out.println("No hay ruta asociada a este enunciado.");
+                System.out.println("No se encontró el enunciado con el ID proporcionado.");
             }
-        } else {
-            System.out.println("No se encontró el enunciado con el ID proporcionado.");
+
+        } catch (SQLException e) {
+            System.out.println("Error al buscar el enunciado o la ruta en la base de datos: " + e.getMessage());
+            e.printStackTrace();
+        } finally {
+            this.closeConnection();
         }
-        
-    } catch (SQLException e) {
-        System.out.println("Error al buscar el enunciado: " + e.getMessage());
-        e.printStackTrace();
-    } finally {
-        this.closeConnection();
     }
-}
 
-
-    
 }
