@@ -23,17 +23,46 @@ import utils.Util;
 public class ControllerAL implements InterfaceControllerAL{
 
     @Override
-    public ConvocatoriaExamen consultarConvocatoriaEnunciado(Integer idE) {
-        return null;
+    public ArrayList<ConvocatoriaExamen> consultarConvocatoriaEnunciado(Integer idE) {
+        ArrayList<ConvocatoriaExamen> convocatorias = new ArrayList<>();
+        ResultSet rs = null;
+
+        this.openConnection();
+
+        try {
+            // Preparar la consulta SQL
+            String query = "SELECT * FROM CONVOCATORIAEXAMEN c JOIN enunciado_convocatoria ec ON c.idConvocatoria = ec.idConvocatoria WHERE ec.idE = ?";
+            stmt = con.prepareStatement(query);
+            stmt.setInt(1, idE);  // Establecer el idE (id del enunciado)
+
+            rs = stmt.executeQuery();
+
+            // Procesar el resultado
+            while (rs.next()) {
+                String convocatoria = rs.getString("convocatoria");
+                String descripcion = rs.getString("descripcion");
+                LocalDate fecha = rs.getDate("fecha").toLocalDate();
+                String curso = rs.getString("curso");
+
+                // Crear el objeto ConvocatoriaExamen y añadirlo al ArrayList
+                ConvocatoriaExamen ce = new ConvocatoriaExamen(convocatoria, descripcion, fecha, curso);
+                convocatorias.add(ce);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            this.closeConnection();
+        }
+
+        return convocatorias;
     }
-    
+
     private Connection con;
     private PreparedStatement state;
 
 	// Sirve para gestionar las sentencias SQL.
     private PreparedStatement stmt;
 
-    
     private final String MUESTRA_CONVOCATORIA_ENUNCIADO_POR_ID = "SELECT convocatoria FROM CONVOCATORIAEXAMEN WHERE IDE = ?";
     final String INSERT_CONVOCATORIA = "INSERT INTO UnidadDidactica (convocatoria,decripcion,fecha,curso) VALUES (?, ?, ?, ?)";
     
@@ -61,43 +90,40 @@ public class ControllerAL implements InterfaceControllerAL{
         }
     }
             
-    public ArrayList rutaEnunciadoPorId(Integer idE) {
-                ResultSet rs = null;
-		String convocatoria = "";
-                ArrayList <String> convocatorias = new ArrayList <String>();
-		con = SingletonConnection.getConnection();
+    public ArrayList<String> rutaEnunciadoPorId(Integer idE) {
+        ResultSet rs = null;
+        String convocatoria = "";
+        ArrayList<String> convocatorias = new ArrayList<>();
+        con = SingletonConnection.getConnection();
 
-		try {
-			stmt = con.prepareStatement(MUESTRA_CONVOCATORIA_ENUNCIADO_POR_ID);
+        try {
+            stmt = con.prepareStatement(MUESTRA_CONVOCATORIA_ENUNCIADO_POR_ID);
 
-			// Cargamos los parámetros
-			stmt.setInt(1, idE);
+            // Cargamos los parámetros
+            stmt.setInt(1, idE);
 
-			rs = stmt.executeQuery();
+            rs = stmt.executeQuery();
 
-			while (rs.next()) {
-				
-				convocatoria = rs.getString("convocatoria");
-				convocatorias.add(convocatoria);
-			}
-                        /*else{
-                            System.out.println("No se encuentra la entrada.");
-                        */
-		} catch (SQLException e) {
-			System.out.println("Error de SQL");
-			e.printStackTrace();
-		} finally {
-			// Cerramos ResultSet
-			if (rs != null) {
-				try {
-					rs.close();
-				} catch (SQLException ex) {
-					System.out.println("Error en cierre del ResultSet");
-				}
-			}
-		}
-		return convocatorias;
+            while (rs.next()) {
+                convocatoria = rs.getString("convocatoria");
+                convocatorias.add(convocatoria);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error de SQL");
+            e.printStackTrace();
+        } finally {
+            // Cerramos ResultSet
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException ex) {
+                    System.out.println("Error en cierre del ResultSet");
+                }
+            }
+        }
+        return convocatorias;
     }
+
     public ConvocatoriaExamen newConvocatoria() {
         String convocatoria;
         String descripcion;
@@ -118,7 +144,7 @@ public class ControllerAL implements InterfaceControllerAL{
         System.out.println("\nIntroduzca el curso a esta convocatoria de examen:");
         curso = Util.introducirCadena();
 
-        return new ConvocatoriaExamen(convocatoria,descripcion,fecha,curso);
+        return new ConvocatoriaExamen(convocatoria, descripcion, fecha, curso);
     }
 
     @Override
@@ -131,8 +157,7 @@ public class ControllerAL implements InterfaceControllerAL{
             state = con.prepareStatement(INSERT_CONVOCATORIA);
             state.setString(1, convocatoriaExamen.getConvocatoria());
             state.setString(2, convocatoriaExamen.getDescripcion());
-            state.setDate(3, java.sql.Date.valueOf(convocatoriaExamen.getFecha())); //esto no me convece pero no funciona que sea state.setDate(3,convocatoriaExamen.getFecha());
-
+            state.setDate(3, java.sql.Date.valueOf(convocatoriaExamen.getFecha())); 
             state.setString(4, convocatoriaExamen.getCurso());
             state.executeUpdate();
             
@@ -140,15 +165,12 @@ public class ControllerAL implements InterfaceControllerAL{
             e.printStackTrace();
         } finally {
             this.closeConnection();
-            
         }
         System.out.println("\nConvocatoria de examen creada correctamente.\n");
     }
 
     @Override
     public ConvocatoriaExamen nuevaConvocatoria() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Not supported yet."); 
     }
-    
-    
 }

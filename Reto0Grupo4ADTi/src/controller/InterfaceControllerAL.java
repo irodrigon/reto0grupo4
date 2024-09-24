@@ -5,6 +5,7 @@
  */
 package controller;
 
+import java.util.ArrayList;
 import model.ConvocatoriaExamen;
 
 /**
@@ -12,8 +13,7 @@ import model.ConvocatoriaExamen;
  * @author Alin
  */
 public interface InterfaceControllerAL {
-    public ConvocatoriaExamen consultarConvocatoriaEnunciado(Integer idE);
+public ArrayList<ConvocatoriaExamen> consultarConvocatoriaEnunciado(Integer idE);
     public ConvocatoriaExamen nuevaConvocatoria();
-
     public void crearConvocatoria();
 }
