@@ -3,15 +3,25 @@ package controller;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import model.UnidadDidactica;
 import utils.Util;
 
 public class ControllerAr implements InterfaceControllerAr {
+
     private Connection conexion;
+    private ResultSet resultado;
+
     private PreparedStatement sentencia;
-    
+
     final String INSERTud = "INSERT INTO UnidadDidactica (idUd, acronimo, titulo, evaluacion, descripcion) VALUES (?, ?, ?, ?, ?)";
+    final String GETconvocatoria = "SELECT convocatoria FROM convocatoriaexamen WHERE idE IS NULL";
+    final String GETenunciado = "SELECT idE, descripcion FROM enunciado";
+    final String getConvocatoria = "SELECT Convocatoria FROM ConvocatoriaExamen where id_Enunciado is null";
+    final String getEnunciado = "SELECT id, descripcion FROM Enunciado";
+    final String UPDATEConvocatoria = "UPDATE ConvocatoriaExamen SET id_Enunciado = ? WHERE convocatoria = ?";
 
     private void openConnection() {
         try {
@@ -79,13 +89,78 @@ public class ControllerAr implements InterfaceControllerAr {
             sentencia.setString(4, unidadDidactica.getEvaluacion());
             sentencia.setString(5, unidadDidactica.getDescripcion());
             sentencia.executeUpdate();
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
             this.closeConnection();
-            
+
         }
         System.out.println("\nUnidad didáctica creada correctamente.\n");
+    }
+
+    public void asignarEnunciado() {
+        this.openConnection();
+        try {
+
+            sentencia = conexion.prepareStatement(getConvocatoria);
+            resultado = sentencia.executeQuery();
+            ArrayList convocatorias = new ArrayList<>();
+
+            System.out.println("Convocatorias sin enunciado asignado:");
+            while (resultado.next()) {
+                String convocatoria = resultado.getString("convocatoria");
+                convocatorias.add(convocatoria);
+                System.out.println(convocatoria);
+            }
+
+            if (convocatorias.isEmpty()) {
+                System.out.println("No hay convocatorias sin enunciado.");
+            }
+
+            System.out.println("Introduzca la convocatoria a la que quiere asignar un enunciado (nombre): ");
+            String nombreConvocatoria = Util.introducirCadena();
+            if (!convocatorias.contains(nombreConvocatoria)) {
+                System.out.println("La convocatoria introducida no existe o ya tiene un enunciado asignado.");
+            }
+
+            sentencia = conexion.prepareStatement(getEnunciado);
+            resultado = sentencia.executeQuery();
+            ArrayList enunciados = new ArrayList<>();
+
+            System.out.println("Enunciados disponibles:");
+            while (resultado.next()) {
+                int id = resultado.getInt("id");
+                String descripcion = resultado.getString("descripcion");
+                enunciados.add(id);
+                System.out.println("ID: " + id + " - Descripción: " + descripcion);
+            }
+            if (enunciados.isEmpty()) {
+                System.out.println("No hay enunciados disponibles para asignar.");
+            }
+
+            System.out.println("Introduzca el ID del enunciado que desea asignar: ");
+            int idEnunciado = Util.leerInt();
+            if (!enunciados.contains(idEnunciado)) {
+                System.out.println("El ID de enunciado introducido no es válido.");
+            }
+
+            sentencia = conexion.prepareStatement(UPDATEConvocatoria);
+            sentencia.setInt(1, idEnunciado);
+            sentencia.setString(2, nombreConvocatoria);
+
+            int convocatoriaActualizada = sentencia.executeUpdate();
+            if (convocatoriaActualizada > 0) {
+                System.out.println("Enunciado asignado correctamente a la convocatoria " + nombreConvocatoria);
+            } else {
+                System.out.println("No se pudo asignar el enunciado a la convocatoria.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error al asignar enunciado a la convocatoria.");
+            e.printStackTrace();
+        } finally {
+            this.closeConnection();
+        }
     }
 }
