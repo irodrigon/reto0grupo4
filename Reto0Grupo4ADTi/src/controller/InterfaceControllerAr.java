@@ -21,4 +21,9 @@ public interface InterfaceControllerAr {
     public UnidadDidactica newUD();
 
     public void crearUD();
+    
+    public void asignarEnunciado();
+    
+     public void mostrarEnunciado();
+     
 }
