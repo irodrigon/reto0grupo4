@@ -6,13 +6,10 @@
 package app;
 
 import controller.Controller;
-import controller.SingletonConnection;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import model.Enunciado;
-import model.UnidadDidactica;
 import utils.Util;
 
 /**

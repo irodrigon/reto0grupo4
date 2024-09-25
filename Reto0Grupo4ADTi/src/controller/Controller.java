@@ -7,6 +7,7 @@ package controller;
 
 import exceptions.ExcepcionComprobarDificultad;
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -24,8 +25,7 @@ import utils.Util;
  */
 public class Controller implements InterfaceController {
 
-    private final SingletonConnection singletonConnection = SingletonConnection.getSingletonConnection();
-    private final Connection connectionToDatabase = singletonConnection.getConnection();
+    private Connection connectionToDatabase;
 
     // Sirve para gestionar las sentencias SQL.
     private PreparedStatement stmt = null;
@@ -44,6 +44,7 @@ public class Controller implements InterfaceController {
 
     @Override
     public Enunciado newEnunciado() {
+
         Boolean dificultadValida = false;
         char eleccion = 0;
         char eleccion2 = 0;
@@ -74,12 +75,14 @@ public class Controller implements InterfaceController {
         }
         System.out.println("\nIntroduce la ruta del enunciado:");
         enunciado.setRuta(Util.introducirCadena());
-        
+
         return enunciado;
     }
 
     @Override
     public void crearEnunciado(Enunciado enunciado) {
+        
+        this.openConnection();
 
         try {
             stmt = connectionToDatabase.prepareStatement(CREAR_ENUNCIADO);
@@ -93,20 +96,19 @@ public class Controller implements InterfaceController {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            this.closeConnection();
+
         }
+
         System.out.println("\nEnunciado creado correctamente.");
-        
+
     }
 
     @Override
     public String rutaArchivoEnunciadoPorId(Integer idE) {
+        
+        this.openConnection();
+
         ResultSet rs = null;
         String ruta = "";
 
@@ -137,14 +139,9 @@ public class Controller implements InterfaceController {
             } catch (SQLException ex) {
                 System.out.println("Error en cierre del ResultSet");
             }
-        }
 
-        try {
-            if (stmt != null) {
-                stmt.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            this.closeConnection();
+
         }
 
         return ruta;
@@ -183,8 +180,10 @@ public class Controller implements InterfaceController {
     public void crearUD() {
         UnidadDidactica unidadDidactica = newUD();
         
+        this.openConnection();
+
         try {
-            
+
             stmt = connectionToDatabase.prepareStatement(INSERTud);
             stmt.setInt(1, unidadDidactica.getIdUd());
             stmt.setString(2, unidadDidactica.getAcronimo());
@@ -196,25 +195,22 @@ public class Controller implements InterfaceController {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            this.closeConnection();
+
         }
         System.out.println("\nUnidad didáctica creada correctamente.\n");
-        
+
     }
 
     @Override
     public ArrayList<ConvocatoriaExamen> convocatoriaEnunciadoPorId(Integer idE) {
+        
+        this.openConnection();
+
         ResultSet rs = null;
-        
+
         ArrayList<ConvocatoriaExamen> convocatorias = new ArrayList<ConvocatoriaExamen>();
-        
-        
+
         try {
             stmt = connectionToDatabase.prepareStatement(MUESTRA_CONVOCATORIA_ENUNCIADO_POR_ID);
 
@@ -222,16 +218,16 @@ public class Controller implements InterfaceController {
             stmt.setInt(1, idE);
 
             rs = stmt.executeQuery();
-            
+
             DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-            
+
             while (rs.next()) {
 
                 String convocatoria = rs.getString("convocatoria");
                 String descripcion = rs.getString("descripcion");
                 LocalDate fecha = rs.getDate("fecha").toLocalDate();
                 String curso = rs.getString("curso");
-                
+
                 System.out.println();
                 System.out.println("Convocatoria: " + convocatoria);
                 System.out.println("Descripcion: " + descripcion);
@@ -257,6 +253,9 @@ public class Controller implements InterfaceController {
             } catch (SQLException ex) {
                 System.out.println("Error en cierre del ResultSet");
             }
+
+            this.closeConnection();
+
         }
 
         return convocatorias;
@@ -289,6 +288,8 @@ public class Controller implements InterfaceController {
     @Override
     public void crearConvocatoria() {
         ConvocatoriaExamen convocatoriaExamen = newConvocatoria();
+        
+        this.openConnection();
 
         try {
             stmt = connectionToDatabase.prepareStatement(INSERT_CONVOCATORIA);
@@ -302,19 +303,16 @@ public class Controller implements InterfaceController {
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            this.closeConnection();
         }
         System.out.println("\nConvocatoria de examen creada correctamente.\n");
     }
 
     @Override
     public ArrayList<String> getEnunciados(int eleccion) {
+        
+        this.openConnection();
+
         ArrayList<String> enunciados = new ArrayList();
         ResultSet rs = null;
 
@@ -340,26 +338,23 @@ public class Controller implements InterfaceController {
             } catch (SQLException ex) {
                 System.out.println("Error en cierre del ResultSet");
             }
+            
+            this.closeConnection();
         }
-
-        try {
-            if (stmt != null) {
-                stmt.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    
 
         return enunciados;
     }
 
     @Override
     public ArrayList<UnidadDidactica> getUnidades() {
+        
+        this.openConnection();
+
         ArrayList<UnidadDidactica> unidades = new ArrayList();
         ResultSet rs = null;
 
         try {
+
             stmt = connectionToDatabase.prepareStatement(OBTENERunidades);
 
             rs = stmt.executeQuery();
@@ -386,14 +381,8 @@ public class Controller implements InterfaceController {
             } catch (SQLException ex) {
                 System.out.println("Error en cierre del ResultSet");
             }
-        }
 
-        try {
-            if (stmt != null) {
-                stmt.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+            this.closeConnection();
         }
 
         return unidades;
@@ -401,6 +390,7 @@ public class Controller implements InterfaceController {
 
     @Override
     public void mostra_unidad_enunciado() {
+
         ArrayList<UnidadDidactica> unidades = getUnidades();
 
         int eleccion, max = 0;
@@ -427,69 +417,67 @@ public class Controller implements InterfaceController {
 
         }
     }
-    
+
     @Override
-    public void actualizaTablaEnunciado_Unidad(int idE, int idUd){
+    public void actualizaTablaEnunciado_Unidad(int idE, int idUd) {
+        
+        this.openConnection();
+
         try {
             stmt = connectionToDatabase.prepareStatement(AGREGAR_UNIDADES_DIDACTICAS);
             stmt.setInt(1, idE);
-            stmt.setInt(2,idUd);
+            stmt.setInt(2, idUd);
             stmt.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
         } finally {
-            try {
-                if (stmt != null) {
-                    stmt.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+            this.closeConnection();
         }
         System.out.println("\nUnidades didacticas agregadas correctamente.\n");
     }
-    
+
     @Override
-    public void agregarUnidadesDidacticas(Enunciado enunciado){
+    public void agregarUnidadesDidacticas(Enunciado enunciado) {
         char eleccion = 0;
         System.out.println("\n**************************AGREGANDO UNIDADES DIDACTICAS**************************");
         ArrayList<UnidadDidactica> unidades = getUnidades();
-        
+
         int max = 0;
-        
-        for(UnidadDidactica unidad : unidades){
+
+        for (UnidadDidactica unidad : unidades) {
             System.out.println("--------------------------------------------------------------------------");
             System.out.printf("%-5s %-9s %-35s %-15s %-10s %n",
                     "IDUD:", "ACRONIMO:", "TITULO:", "EVALUACION:", "DESCRIPCION:");
             System.out.printf("%-5d %-9s %-35s %-15s %-10s %n",
                     unidad.getIdUd(), unidad.getAcronimo(), unidad.getTitulo(), unidad.getEvaluacion(), unidad.getDescripcion());
             System.out.println("--------------------------------------------------------------------------");
-            max +=1;
+            max += 1;
         }
-        
+
         int idUd = 0;
-        
-        do{
+
+        do {
             System.out.println("Seleccione la unidad didactica que desea agregar al enunciado:");
-            idUd = Util.leerInt(1,max);
-            for(UnidadDidactica unidad : unidades){
-                if(idUd == unidad.getIdUd()){
+            idUd = Util.leerInt(1, max);
+            for (UnidadDidactica unidad : unidades) {
+                if (idUd == unidad.getIdUd()) {
                     enunciado.getUnidadesDidacticas().add(unidad);
                 }
             }
             actualizaTablaEnunciado_Unidad(enunciado.getId(), idUd);
             System.out.println("¿Desea agregar mas unidades didacticas?");
-            eleccion = Util.leerChar('S','N');
-        }while(eleccion == 'S');
+            eleccion = Util.leerChar('S', 'N');
+        } while (eleccion == 'S');
     }
-    
-     @Override
+
+    @Override
     public void asignarEnunciado() {
         
-        
+        this.openConnection();
+
         ResultSet rs = null;
-        
+
         try {
             stmt = connectionToDatabase.prepareStatement(GETconvocatoria);
             rs = stmt.executeQuery();
@@ -552,7 +540,7 @@ public class Controller implements InterfaceController {
             System.out.println("Error al asignar enunciado a la convocatoria.");
             e.printStackTrace();
         } finally {
-              // Cerramos ResultSet
+            // Cerramos ResultSet
             try {
                 if (rs != null) {
                     rs.close();
@@ -560,25 +548,21 @@ public class Controller implements InterfaceController {
             } catch (SQLException ex) {
                 System.out.println("Error en cierre del ResultSet");
             }
+
+            this.closeConnection();
         }
 
-        try {
-            if (stmt != null) {
-                stmt.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        
     }
-    
+
     @Override
-    public void asociaEnunciado(Enunciado enunciado){
+    public void asociaEnunciado(Enunciado enunciado) {
         
+        this.openConnection();
+
         System.out.println("\n**************************ASOCIANDO ENUNCIADOS A CONVOCATORIAS**************************");
-        
+
         ResultSet rs = null;
-        
+
         try {
             stmt = connectionToDatabase.prepareStatement(GETconvocatoria);
             rs = stmt.executeQuery();
@@ -602,7 +586,7 @@ public class Controller implements InterfaceController {
                 System.out.println("La convocatoria introducida no existe o ya tiene un enunciado asignado.");
                 return;
             }
-            
+
             stmt = connectionToDatabase.prepareStatement(UPDATEConvocatoria);
             stmt.setInt(1, enunciado.getId());
             stmt.setString(2, nombreConvocatoria);
@@ -618,7 +602,7 @@ public class Controller implements InterfaceController {
             System.out.println("Error al asignar enunciado a la convocatoria.");
             e.printStackTrace();
         } finally {
-              // Cerramos ResultSet
+            // Cerramos ResultSet
             try {
                 if (rs != null) {
                     rs.close();
@@ -626,12 +610,32 @@ public class Controller implements InterfaceController {
             } catch (SQLException ex) {
                 System.out.println("Error en cierre del ResultSet");
             }
+
+            this.closeConnection();
         }
 
+    }
+
+    private void openConnection() {
+        try {
+            String url = "jdbc:mysql://localhost:3306/examendb";
+
+            connectionToDatabase = DriverManager.getConnection(url, "root", "abcd*1234");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void closeConnection() {
         try {
             if (stmt != null) {
                 stmt.close();
             }
+            if (connectionToDatabase != null) {
+                connectionToDatabase.close();
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
