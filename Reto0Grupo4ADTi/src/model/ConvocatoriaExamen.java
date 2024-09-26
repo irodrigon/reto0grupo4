@@ -9,17 +9,22 @@ import java.time.LocalDate;
 
 /**
  *
- * @author Alin
+ * @author Iñi
  */
 public class ConvocatoriaExamen {
+    
     private String convocatoria;
     private String descripcion;
     private LocalDate fecha;
     private String curso;
     
+    public ConvocatoriaExamen(){
+    
+    }
+    
     public ConvocatoriaExamen(String convocatoria, String descripcion,LocalDate fecha,String curso){
         this.convocatoria=convocatoria;
-        this.descripcion=convocatoria;
+        this.descripcion=descripcion;
         this.fecha=fecha;
         this.curso=curso;
     }
@@ -55,5 +60,4 @@ public class ConvocatoriaExamen {
     public void setCurso(String curso) {
         this.curso = curso;
     }
-    
 }
