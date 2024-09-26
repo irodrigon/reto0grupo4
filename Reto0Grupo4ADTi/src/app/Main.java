@@ -5,11 +5,21 @@
  */
 package app;
 
+<<<<<<< HEAD
 import controller.Controller;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import model.Enunciado;
+=======
+
+<<<<<<< HEAD
+import controller.ControllerAr;
+=======
+import controller.ControllerAI;
+import controller.InterfaceControllerAI;
+>>>>>>> main
+>>>>>>> main
 import utils.Util;
 
 /**
@@ -117,8 +127,14 @@ public class Main {
 
     }
 
+<<<<<<< HEAD
     private static void crearUnidad(Controller c) {
         c.crearUD();
+=======
+    private static void crearUnidad() {
+      ControllerAr c = new ControllerAr();
+      c.crearUD();
+>>>>>>> main
     }
 
     private static void crearConvocatoria(Controller c) {
