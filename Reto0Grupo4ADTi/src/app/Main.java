@@ -6,8 +6,12 @@
 package app;
 
 
+<<<<<<< HEAD
+import controller.ControllerAr;
+=======
 import controller.ControllerAI;
 import controller.InterfaceControllerAI;
+>>>>>>> main
 import utils.Util;
 
 /**
@@ -116,7 +120,8 @@ public class Main {
     }
 
     private static void crearUnidad() {
-        
+      ControllerAr c = new ControllerAr();
+      c.crearUD();
     }
 
     private static void crearConvocatoria() {
