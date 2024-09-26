@@ -276,7 +276,7 @@ public class Controller implements InterfaceController {
         System.out.println("\nIntroduzca la descripcion a esta convocatoria de examen:");
         descripcion = Util.introducirCadena();
 
-        System.out.println("\nIntroduzca la fecha de esta convocatoria de examen:");
+        System.out.println("\nIntroduzca la fecha de esta convocatoria de examen(dd/MM/yyyy):");
         fecha = Util.leerFechaDMA();
 
         System.out.println("\nIntroduzca el curso a esta convocatoria de examen:");
