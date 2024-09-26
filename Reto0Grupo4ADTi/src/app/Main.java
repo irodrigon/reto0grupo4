@@ -6,6 +6,8 @@
 package app;
 
 
+import controller.ControllerAI;
+import controller.InterfaceControllerAI;
 import utils.Util;
 
 /**
@@ -126,7 +128,8 @@ public class Main {
     }
 
     private static void consultarEnunciadoPorUnidad() {
-        
+        InterfaceControllerAI c = new ControllerAI();
+        c.mostra_unidad_enunciado();
     }
 
     private static void consultarConvocatoriaPorEnunciado() {
