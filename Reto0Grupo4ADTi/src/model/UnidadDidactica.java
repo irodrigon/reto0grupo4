@@ -24,7 +24,13 @@ public class UnidadDidactica {
         this.evaluacion = evaluacion;
         this.descripcion = descripcion;
     }
+<<<<<<< HEAD
     
+=======
+    public UnidadDidactica(){
+        
+    }
+>>>>>>> main
     public Integer getIdUd() {
         return idUd;
     }
@@ -72,4 +78,8 @@ public class UnidadDidactica {
     
     
     
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> main
