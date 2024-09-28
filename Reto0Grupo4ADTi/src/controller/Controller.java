@@ -41,26 +41,27 @@ public class Controller implements InterfaceController {
     private final String GETconvocatoria = "SELECT convocatoria FROM convocatoriaexamen WHERE idE IS NULL";
     private final String GETenunciado = "SELECT idE, descripcion FROM enunciado";
     private final String UPDATEConvocatoria = "UPDATE convocatoriaexamen SET idE = ? WHERE convocatoria = ?";
+    private final String OBTENERconvocatorias = "select * from convocatoriaexamen";
+    private final String getEnunciados = "select * from enunciado";
 
     @Override
-    public Enunciado newEnunciado() {
-
+    public Enunciado newEnunciado(int idE) {
         Boolean dificultadValida = false;
         char eleccion = 0;
         char eleccion2 = 0;
+        String descripcion = "";
         String nivel = "";
+        boolean disponible = true;
+        String ruta = "";
         Enunciado enunciado = new Enunciado();
         System.out.println("\n**************************CREANDO ENUNCIADOS**************************");
-        System.out.println("\nIntroduce el ID del enunciado:");
-        enunciado.setId(Util.leerInt());
         System.out.println("\nIntroduce la descripcion del enunciado:");
-        enunciado.setDescripcion(Util.introducirCadena());
+        descripcion = Util.introducirCadena();
         while (!dificultadValida) {
             System.out.println("\nIntroduce el nivel de dificultad del enunciado(ALTA/MEDIA/BAJA):");
             nivel = Util.introducirCadena();
-            if (nivel.equals("ALTA") || nivel.equals("MEDIA") || nivel.equals("BAJA")) {
+            if (nivel.equalsIgnoreCase("ALTA") || nivel.equalsIgnoreCase("MEDIA") || nivel.equalsIgnoreCase("BAJA")) {
                 dificultadValida = true;
-                enunciado.setNivel(nivel);
             } else {
                 ExcepcionComprobarDificultad excepcionComprobarDificultad = new ExcepcionComprobarDificultad(nivel);
                 excepcionComprobarDificultad.mostrarMensajeIncorrecto();
@@ -69,14 +70,14 @@ public class Controller implements InterfaceController {
         System.out.println("\nIntroduce si esta disponible o no(S/N):");
         eleccion = Util.leerChar('S', 'N');
         if (eleccion == 'S') {
-            enunciado.setDisponible(true);
+            disponible = true;
         } else {
-            enunciado.setDisponible(false);
+            disponible = false;
         }
         System.out.println("\nIntroduce la ruta del enunciado:");
-        enunciado.setRuta(Util.introducirCadena());
+        ruta = Util.introducirCadena();
 
-        return enunciado;
+        return new Enunciado(idE,descripcion,nivel,disponible,ruta);
     }
 
     @Override
@@ -149,17 +150,14 @@ public class Controller implements InterfaceController {
     }
 
     @Override
-    public UnidadDidactica newUD() {
-        Integer idUd;
+    public UnidadDidactica newUD(int idUd){
+        
         String acronimo;
         String titulo;
         String evaluacion;
         String descripcion;
 
         System.out.println("Nueva unidad didáctica:");
-
-        System.out.println("\nIntroduzca el ID de la unidad didáctica:");
-        idUd = Util.leerInt();
 
         System.out.println("\nIntroduzca el acrónimo correspondiente a esta unidad didáctica:");
         acronimo = Util.introducirCadena();
@@ -177,8 +175,8 @@ public class Controller implements InterfaceController {
     }
 
     @Override
-    public void crearUD() {
-        UnidadDidactica unidadDidactica = newUD();
+    public void crearUD(int idUd) {
+        UnidadDidactica unidadDidactica = newUD(idUd);
         
         this.openConnection();
 
@@ -238,6 +236,9 @@ public class Controller implements InterfaceController {
                 ConvocatoriaExamen ce = new ConvocatoriaExamen(convocatoria, descripcion, fecha, curso);
                 convocatorias.add(ce);
             }
+            if(convocatorias.isEmpty()){
+                System.out.println("No existen convocatorias con ese enunciado.");
+            }
             /*else{
                             System.out.println("No se encuentra la entrada.");
              */
@@ -262,16 +263,12 @@ public class Controller implements InterfaceController {
     }
 
     @Override
-    public ConvocatoriaExamen newConvocatoria() {
-        String convocatoria;
+    public ConvocatoriaExamen newConvocatoria(String convocatoria) {
         String descripcion;
         LocalDate fecha;
         String curso;
 
         System.out.println("Nueva convocatoria de examen:");
-
-        System.out.println("\nIntroduzca la convocatoria del examen:");
-        convocatoria = Util.introducirCadena();
 
         System.out.println("\nIntroduzca la descripcion a esta convocatoria de examen:");
         descripcion = Util.introducirCadena();
@@ -286,8 +283,8 @@ public class Controller implements InterfaceController {
     }
 
     @Override
-    public void crearConvocatoria() {
-        ConvocatoriaExamen convocatoriaExamen = newConvocatoria();
+    public void crearConvocatoria(String convocatoria) {
+        ConvocatoriaExamen convocatoriaExamen = newConvocatoria(convocatoria);
         
         this.openConnection();
 
@@ -389,7 +386,7 @@ public class Controller implements InterfaceController {
     }
 
     @Override
-    public void mostra_unidad_enunciado() {
+    public void mostrar_unidad_enunciado() {
 
         ArrayList<UnidadDidactica> unidades = getUnidades();
 
@@ -460,11 +457,6 @@ public class Controller implements InterfaceController {
         do {
             System.out.println("Seleccione la unidad didactica que desea agregar al enunciado:");
             idUd = Util.leerInt(1, max);
-            for (UnidadDidactica unidad : unidades) {
-                if (idUd == unidad.getIdUd()) {
-                    enunciado.getUnidadesDidacticas().add(unidad);
-                }
-            }
             actualizaTablaEnunciado_Unidad(enunciado.getId(), idUd);
             System.out.println("¿Desea agregar mas unidades didacticas?");
             eleccion = Util.leerChar('S', 'N');
@@ -482,16 +474,14 @@ public class Controller implements InterfaceController {
             stmt = connectionToDatabase.prepareStatement(GETconvocatoria);
             rs = stmt.executeQuery();
             ArrayList<String> convocatorias = new ArrayList<>();
-
-            System.out.println("Convocatorias sin enunciado asignado:");
+            
             while (rs.next()) {
                 String convocatoria = rs.getString("convocatoria");
                 convocatorias.add(convocatoria);
-                System.out.println(convocatoria);
             }
 
             if (convocatorias.isEmpty()) {
-                System.out.println("No hay convocatorias sin enunciado.");
+                System.out.println("No hay convocatorias sin enunciado. Crea mas convocatorias.");
                 return;
             }
 
@@ -576,7 +566,7 @@ public class Controller implements InterfaceController {
             }
 
             if (convocatorias.isEmpty()) {
-                System.out.println("No hay convocatorias sin enunciado.");
+                System.out.println("No hay convocatorias sin enunciado. Crea mas convocatorias.");
                 return;
             }
 
@@ -639,5 +629,174 @@ public class Controller implements InterfaceController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    @Override
+    public void mostrar_unidades_didacticas(){
+        ArrayList<UnidadDidactica> unidades = getUnidades();
+        
+        System.out.println("-------------------UNIDADES DIDACTICAS YA EXISTENTES----------------------");
+
+        for (UnidadDidactica unidad : unidades) {
+
+            System.out.println("----------------------------------------------------------------------");
+            System.out.printf("%-5s %-9s %-35s %-15s %-10s %n",
+                    "IDUD:", "ACRONIMO:", "TITULO:", "EVALUACION:", "DESCRIPCION:");
+            System.out.printf("%-5d %-9s %-35s %-15s %-10s %n",
+                    unidad.getIdUd(), unidad.getAcronimo(), unidad.getTitulo(), unidad.getEvaluacion(), unidad.getDescripcion());
+            System.out.println("--------------------------------------------------------------------------");
+        }
+    }
+    
+    @Override
+    public boolean comprobarUnidadDidactica(int idUD){
+        ArrayList<UnidadDidactica> unidades = getUnidades();
+        for (UnidadDidactica unidad : unidades){
+            if(unidad.getIdUd() == idUD){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public ArrayList<ConvocatoriaExamen> getConvocatorias(){
+        this.openConnection();
+
+        ArrayList<ConvocatoriaExamen> convocatorias = new ArrayList();
+        ResultSet rs = null;
+
+        try {
+
+            stmt = connectionToDatabase.prepareStatement(OBTENERconvocatorias);
+
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                ConvocatoriaExamen convocatoria = new ConvocatoriaExamen();
+
+                convocatoria.setConvocatoria(rs.getString("convocatoria"));
+                convocatoria.setDescripcion(rs.getString("descripcion"));
+                convocatoria.setFecha(rs.getDate("fecha").toLocalDate());
+                convocatoria.setCurso(rs.getString("curso"));
+      
+                convocatorias.add(convocatoria);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Cerramos ResultSet
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error en cierre del ResultSet");
+            }
+
+            this.closeConnection();
+        }
+
+        return convocatorias;
+    }
+    
+    
+    @Override
+    public void mostrarConvocatoriasExamen(){
+        ArrayList<ConvocatoriaExamen> convocatorias = getConvocatorias();
+        
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        
+        System.out.println("-------------------CONVOCATORIAS YA EXISTENTES----------------------------");
+
+        for (ConvocatoriaExamen convocatoria : convocatorias) {
+
+            System.out.println("----------------------------------------------------------------------");
+            System.out.printf("%-15s %-20s %-15s %-15s %n",
+                    "CONVOCATORIA:", "DESCRIPCION:", "FECHA:", "CURSO:");
+            System.out.printf("%-15s %-20s %-15s %-15s %n",
+                    convocatoria.getConvocatoria(), convocatoria.getDescripcion(), convocatoria.getFecha().format(formato), convocatoria.getCurso());
+            System.out.println("--------------------------------------------------------------------------");
+        }
+    }
+    
+    @Override
+    public boolean comprobarConvocatoria(String convocatoria){
+        ArrayList<ConvocatoriaExamen> convocatorias = getConvocatorias();
+        for (ConvocatoriaExamen convocatoria1 : convocatorias){
+            if(convocatoria1.getConvocatoria().equalsIgnoreCase(convocatoria)){
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    @Override
+    public ArrayList<Enunciado> todosLosEnunciados(){
+        this.openConnection();
+
+        ArrayList<Enunciado> enunciados = new ArrayList();
+        ResultSet rs = null;
+
+        try {
+
+            stmt = connectionToDatabase.prepareStatement(getEnunciados);
+
+            rs = stmt.executeQuery();
+            while (rs.next()) {
+                Enunciado enunciado = new Enunciado();
+
+                enunciado.setId(rs.getInt("idE"));
+                enunciado.setDescripcion(rs.getString("descripcion"));
+                enunciado.setNivel(rs.getString("nivel"));
+                enunciado.setDisponible(rs.getBoolean("disponible"));
+                enunciado.setRuta(rs.getString("ruta"));
+      
+                enunciados.add(enunciado);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            // Cerramos ResultSet
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error en cierre del ResultSet");
+            }
+
+            this.closeConnection();
+        }
+
+        return enunciados;
+    }
+    
+    @Override
+    public void mostrarEnunciados(){
+        ArrayList<Enunciado> enunciados = todosLosEnunciados();
+        
+        System.out.println("-------------------Enunciados YA EXISTENTES----------------------------");
+
+        for (Enunciado enunciado : enunciados) {
+
+            System.out.println("----------------------------------------------------------------------");
+            System.out.printf("%-15s %-20s %-15s %-15s %-20s %n",
+                    "IDE:", "DESCRIPCION:", "DIFICULTAD:", "DISPONIBLE:","RUTA");
+            System.out.printf("%-15s %-20s %-15s %-15s %-20s %n",
+                    enunciado.getId(), enunciado.getDescripcion(), enunciado.getNivel(), enunciado.isDisponible()? "si": "no", enunciado.getRuta());
+            System.out.println("--------------------------------------------------------------------------");
+        }
+    }
+    
+    @Override
+    public boolean comprobarEnunciado(int idE){
+        ArrayList<Enunciado> enunciados = todosLosEnunciados();
+        for (Enunciado enunciado : enunciados){
+            if(enunciado.getId() == idE){
+                return true;
+            }
+        }
+        return false;
     }
 }

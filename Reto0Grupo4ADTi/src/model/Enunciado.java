@@ -25,6 +25,14 @@ public class Enunciado implements Serializable{
         this.unidadesDidacticas = new ArrayList<UnidadDidactica>();
     }
 
+    public Enunciado(Integer idE, String descripcion, String nivel, boolean disponible, String ruta) {
+        this.idE = idE;
+        this.descripcion = descripcion;
+        this.nivel = Dificultad.valueOf(nivel.toUpperCase());
+        this.disponible = disponible;
+        this.ruta = ruta;
+    }
+    
     public Enunciado(Integer id, String descripcion, String nivel, boolean disponible, String ruta, ArrayList<UnidadDidactica> unidadesdidacticas) {
         this.idE = id;
         this.descripcion = descripcion;
