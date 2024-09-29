@@ -173,6 +173,7 @@ public class Main {
     private static void visualizarDocumentoTexto(Controller c) {
         String ruta = "";
         Enunciado enunciado = null;
+        c.mostrarEnunciados();
         System.out.println();
         System.out.println("Introduzca el id del enunciado:");
         ruta = c.rutaArchivoEnunciadoPorId(Util.leerInt());
