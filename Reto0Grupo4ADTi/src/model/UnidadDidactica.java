@@ -28,17 +28,7 @@ public class UnidadDidactica {
         this.evaluacion = evaluacion;
         this.descripcion = descripcion;
     }
-<<<<<<< HEAD
     
-=======
-<<<<<<< HEAD
-    
-=======
-    public UnidadDidactica(){
-        
-    }
->>>>>>> main
->>>>>>> main
     public Integer getIdUd() {
         return idUd;
     }
@@ -83,15 +73,4 @@ public class UnidadDidactica {
     public String toString() {
         return "UnidadDidactica{" + "idUd=" + idUd + ", acronimo=" + acronimo + ", titulo=" + titulo + ", evaluacion=" + evaluacion + ", descripcion=" + descripcion + '}';
     }
-<<<<<<< HEAD
 }
-=======
-    
-    
-    
-<<<<<<< HEAD
-}
-=======
-}
->>>>>>> main
->>>>>>> main

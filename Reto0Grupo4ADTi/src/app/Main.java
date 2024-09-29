@@ -5,21 +5,11 @@
  */
 package app;
 
-<<<<<<< HEAD
 import controller.Controller;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import model.Enunciado;
-=======
-
-<<<<<<< HEAD
-import controller.ControllerAr;
-=======
-import controller.ControllerAI;
-import controller.InterfaceControllerAI;
->>>>>>> main
->>>>>>> main
 import utils.Util;
 
 /**
@@ -127,32 +117,53 @@ public class Main {
 
     }
 
-<<<<<<< HEAD
     private static void crearUnidad(Controller c) {
-        c.crearUD();
-=======
-    private static void crearUnidad() {
-      ControllerAr c = new ControllerAr();
-      c.crearUD();
->>>>>>> main
+
+        Integer idUd = 0;
+        c.mostrar_unidades_didacticas();
+        System.out.println("\nIntroduzca el ID de la unidad didáctica:");
+        idUd = Util.leerInt();
+        if (c.comprobarUnidadDidactica(idUd)) {
+            System.out.println("Esta unidad didactica ya existe.");
+        } else {
+            c.crearUD(idUd);
+        }
     }
 
     private static void crearConvocatoria(Controller c) {
-        c.crearConvocatoria();
+
+        String convocatoria = "";
+        c.mostrarConvocatoriasExamen();
+        System.out.println("\nIntroduzca la convocatoria del examen:");
+        convocatoria = Util.introducirCadena();
+        if (c.comprobarConvocatoria(convocatoria)) {
+            System.out.println("Esta convocatoria ya existe.");
+        } else {
+            c.crearConvocatoria(convocatoria);
+        }
     }
 
     private static void crearEnunciadoExamen(Controller c) {
-        Enunciado enunciado = c.newEnunciado();
-        c.crearEnunciado(enunciado);
-        c.agregarUnidadesDidacticas(enunciado);
-        c.asociaEnunciado(enunciado);
+        int idE = 0;
+        c.mostrarEnunciados();
+        System.out.println("\nIntroduce el ID del enunciado:");
+        idE = Util.leerInt();
+        if (c.comprobarEnunciado(idE)) {
+            System.out.println("Este ID de enunciado ya existe.");
+        } else {
+            Enunciado enunciado = c.newEnunciado(idE);
+            c.crearEnunciado(enunciado);
+            c.agregarUnidadesDidacticas(enunciado);
+            c.asociaEnunciado(enunciado);
+        }
     }
 
     private static void consultarEnunciadoPorUnidad(Controller c) {
-        c.mostra_unidad_enunciado();
+        c.mostrar_unidad_enunciado();
     }
 
     private static void consultarConvocatoriaPorEnunciado(Controller c) {
+        c.mostrarEnunciados();
         System.out.println("Introduzca el ID del enunciado:");
         int idE = Util.leerInt();
         System.out.println("Convocatorias con el enunciado: " + idE);
@@ -162,9 +173,10 @@ public class Main {
     private static void visualizarDocumentoTexto(Controller c) {
         String ruta = "";
         Enunciado enunciado = null;
+        c.mostrarEnunciados();
         System.out.println();
         System.out.println("Introduzca el id del enunciado:");
-        ruta = c.rutaArchivoEnunciadoPorId(Util.leerInt()); 
+        ruta = c.rutaArchivoEnunciadoPorId(Util.leerInt());
         if (ruta != null && !ruta.isEmpty()) {
             try {
                 File archivo = new File(System.getProperty("user.dir") + "/src/enunciados/" + ruta);
@@ -183,6 +195,7 @@ public class Main {
     }
 
     private static void asignarEnunciadoConvocatoria(Controller c) {
+        c.mostrarConvocatoriasExamen();
         c.asignarEnunciado();
     }
 

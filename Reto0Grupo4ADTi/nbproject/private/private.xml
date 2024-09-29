@@ -1,41 +1,12 @@
-<<<<<<< HEAD
-=======
-<<<<<<< HEAD
->>>>>>> main
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-<<<<<<< HEAD
             <file>file:/C:/Users/irodr/OneDrive/Escritorio/FP-2024-2025/Desarrollo/Acceso%20a%20datos%20-%20ADTi%20-%20Desarrollo/Reto0/Reto0Grupo4ADTi/src/app/Main.java</file>
             <file>file:/C:/Users/irodr/OneDrive/Escritorio/FP-2024-2025/Desarrollo/Acceso%20a%20datos%20-%20ADTi%20-%20Desarrollo/Reto0/Reto0Grupo4ADTi/src/controller/InterfaceController.java</file>
-            <file>file:/C:/Users/irodr/OneDrive/Escritorio/FP-2024-2025/Desarrollo/Acceso%20a%20datos%20-%20ADTi%20-%20Desarrollo/Reto0/Reto0Grupo4ADTi/src/model/ConvocatoriaExamen.java</file>
-            <file>file:/C:/Users/irodr/OneDrive/Escritorio/FP-2024-2025/Desarrollo/Acceso%20a%20datos%20-%20ADTi%20-%20Desarrollo/Reto0/Reto0Grupo4ADTi/src/model/UnidadDidactica.java</file>
             <file>file:/C:/Users/irodr/OneDrive/Escritorio/FP-2024-2025/Desarrollo/Acceso%20a%20datos%20-%20ADTi%20-%20Desarrollo/Reto0/Reto0Grupo4ADTi/src/model/Enunciado.java</file>
             <file>file:/C:/Users/irodr/OneDrive/Escritorio/FP-2024-2025/Desarrollo/Acceso%20a%20datos%20-%20ADTi%20-%20Desarrollo/Reto0/Reto0Grupo4ADTi/src/controller/Controller.java</file>
         </group>
     </open-files>
 </project-private>
-=======
-            <file>file:/C:/Users/egure/OneDrive/Escritorio/2DAMi/reto0grupo4ADTi/Reto0Grupo4ADTi/src/app/Main.java</file>
-            <file>file:/C:/Users/egure/OneDrive/Escritorio/2DAMi/reto0grupo4ADTi/Reto0Grupo4ADTi/src/model/UnidadDidactica.java</file>
-            <file>file:/C:/Users/egure/OneDrive/Escritorio/2DAMi/reto0grupo4ADTi/Reto0Grupo4ADTi/src/utils/Util.java</file>
-            <file>file:/C:/Users/egure/OneDrive/Escritorio/2DAMi/reto0grupo4ADTi/Reto0Grupo4ADTi/src/controller/InterfaceControllerAr.java</file>
-        </group>
-    </open-files>
-</project-private>
-=======
-<?xml version="1.0" encoding="UTF-8"?>
-<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
-    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group>
-            <file>file:/C:/Users/Alin/Documents/NetBeansProjects/reto0grupo4ADTi/Reto0Grupo4ADTi/src/controller/InterfaceControllerAL.java</file>
-            <file>file:/C:/Users/Alin/Documents/NetBeansProjects/reto0grupo4ADTi/Reto0Grupo4ADTi/src/app/Main.java</file>
-            <file>file:/C:/Users/Alin/Documents/NetBeansProjects/reto0grupo4ADTi/Reto0Grupo4ADTi/src/controller/ControllerAL.java</file>
-        </group>
-    </open-files>
-</project-private>
->>>>>>> main
->>>>>>> main
